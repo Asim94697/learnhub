@@ -20,15 +20,18 @@ app.use('/api/students', studentRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/contacts', contactRoutes);
 
-app.get('/', (req, res)=>{
+app.get('/', (req, res) => {
     res.send('LearnHub API is running');
 });
 
-const PORT = process.env.PORT || 5000;
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log('MongoDB Atlas connected');
+    })
+    .catch((error) => {
+        console.error('MongoDB connection error:', error.message);
+    });
 
-mongoose.connect(process.env.MONGO_URI).then(()=>{
-    console.log('MongoDB Altas connected');
-    app.listen(PORT, ()=> console.log(`server running on http://localhost:${PORT}`));
-})
-
-.catch((error)=> console.error('MongoDB connection error:', error.message));
+// Export app for Vercel
+module.exports = app;
